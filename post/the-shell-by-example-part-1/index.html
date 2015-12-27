@@ -1,0 +1,533 @@
+<!doctype html>
+<html class="no-js">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Blog | Ryan Lynch</title>
+        <meta name="author">
+        <meta name="description" content="The technical blog of Ryan Lynch">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="generator" content="Hugo 0.15" />
+          <link href="http://www.ryanlyn.chpost/index.xml" rel="alternate" type="application/rss+xml" title="Blog | Ryan Lynch" />
+          <link href="http://www.ryanlyn.chpost/index.xml" rel="feed" type="application/rss+xml" title="Blog | Ryan Lynch" />
+        <link href='//fonts.googleapis.com/css?family=Roboto:400,300,700|Noto+Serif:400,400italic,700,700italic' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="http://www.ryanlyn.chcss/styles.css">
+        <link rel="icon" href="http://www.ryanlyn.chfavicon.ico">
+        <link rel="apple-touch-icon" href="http://www.ryanlyn.chapple-touch-icon.png" />
+        <link rel="stylesheet" href="http://www.ryanlyn.chcss/highlightjs/monokai.css">
+        <script src="http://www.ryanlyn.chjs/vendor/modernizr-2.8.0.min.js"></script>
+				<style>
+				body {
+					tab-size: 2;
+				}
+        .site-header h2 .logo {
+        background: url(http://www.ryanlyn.chimg/concert.jpg) no-repeat 0 0;
+        }
+        @media (min--moz-device-pixel-ratio: 1.3), (-o-min-device-pixel-ratio: 2.6 / 2), (-webkit-min-device-pixel-ratio: 1.3), (min-device-pixel-ratio: 1.3), (min-resolution: 1.3dppx) {
+          .site-header h2 .logo {
+            background-image: url(http://www.ryanlyn.chimg/concert.jpg);
+        }}
+       .site-header {
+         background: #2a373d url(http://www.ryanlyn.chimg/concert.jpg) no-repeat center center;
+				 background-size: 100%;
+         z-index: -1;
+        }
+        </style>
+    </head>
+    <body>
+        
+        <header class="site-header">
+          <div class="transparent-layer">
+              <h2>Rock Out with your Laptop Out</h2>
+          </div>
+        </header>
+
+
+<div class="container clearfix">
+    <main role="main" class="content">
+        <article class="post">
+            <a class="btn" href="http://www.ryanlyn.ch" title="">&laquo; </a>
+            
+<h1><a href="http://www.ryanlyn.ch/post/the-shell-by-example-part-1/" title="The Shell by Example: Part 1">The Shell by Example: Part 1</a></h1>
+
+<footer class="post-info"> <span class="post-meta"><time datetime="2015.12.24">2015.12.24</time>
+
+</span>
+</footer>
+
+            <p>In a nutshell (see what I did there), the shell is a program that allows you to
+interact with the core of your operating system by executing commands. You may
+think that this is an antiquated way to work on a computer given that we have
+graphical interfaces that perform similar functions. There is a reason why
+we continue to use it though. If you have some working knowledge of how to use
+the shell you&rsquo;ll find that many tasks can be performed much more efficiently
+compared to navigating menus and clicking with the mouse.</p>
+
+<p>There are different shell programs, but the most commonly used and the one that
+you most likely have on your system is called &ldquo;bash&rdquo;. Some parts of this tutorial
+only relate to bash, so let&rsquo;s check first that you&rsquo;re using bash.</p>
+
+<pre><code class="language-bash">$ echo $0
+</code></pre>
+
+<p>If it says &ldquo;bash&rdquo; then you&rsquo;re good to go.</p>
+
+<p>First, say hello to yourself</p>
+
+<pre><code class="language-bash">$ echo 'Hello me!'
+</code></pre>
+
+<p>echo is a more useful command than it might seem at first blush. We&rsquo;ll see
+it again later.</p>
+
+<p>Now that we&rsquo;ve said hello, it might be a good idea to figure out where
+we are. When you&rsquo;re working in the shell you&rsquo;re always working in a
+directory on the filesystem. This directory is called your working
+directory, and by default the shell will start in what&rsquo;s called your
+&ldquo;home&rdquo; directory. We can tell the shell to print out our current
+working directory by using the pwd command for &ldquo;print working directory&rdquo;:</p>
+
+<pre><code class="language-bash">$ pwd
+</code></pre>
+
+<p>This should output something like /Users/ryan for example, if you happen
+to be on an OSX machine and your username is &ldquo;ryan&rdquo;. Let&rsquo;s take a look
+around and see what what&rsquo;s in this directory.</p>
+
+<pre><code class="language-bash">$ ls
+</code></pre>
+
+<p>ls displays a list of files and directories in the current working
+directory. Like many commands it has additional options that determine
+how it behaves. Many commands come with built in manuals, which we can
+access using the man command, followed by the command we want info on.</p>
+
+<pre><code class="language-bash">$ man ls
+</code></pre>
+
+<p>If you see a command somewhere and want more info, check and see if it
+has a man page. Many commands have help that&rsquo;s accessible by passing an
+argument to the command, usually -h or &ndash;help. Let&rsquo;s try man &ndash;help.</p>
+
+<pre><code class="language-bash">$ man --help
+</code></pre>
+
+<p>Even if a command doesn&rsquo;t have a man page, it may have a help argument
+to display basic usage information. Let&rsquo;s try passing one of the most
+used options for ls, -l for &ldquo;long form&rdquo;.</p>
+
+<pre><code class="language-bash">$ ls -l
+</code></pre>
+
+<p>the &ldquo;l&rdquo; flag tells ls that we want to display the list of files and
+directories in the long form, which shows additional information.
+Let&rsquo;s try another.</p>
+
+<pre><code class="language-bash">$ ls -a
+</code></pre>
+
+<p>This time it probably displayed some additional files and directories
+starting with a &ldquo;.&rdquo;. These are called dotfiles, and they usually perform
+system functions. They are hidden from ls output normally for that reason.
+We can also combine them together by using both &ldquo;l&rdquo; and &ldquo;a&rdquo;:</p>
+
+<pre><code class="language-bash">$ ls -la
+</code></pre>
+
+<p>Now we can see the dotfiles in the long form. Many commands allow you to
+combine options like this to configure how you want commands to behave.</p>
+
+<p>So we&rsquo;re in your home directory, and it&rsquo;s traditionally the place on the
+system where you have free reign to put stuff. Since that&rsquo;s the case,
+let&rsquo;s create a new directory to put stuff in. (if you see a stuff directory
+in the ls output above pick a different name).</p>
+
+<pre><code class="language-bash">$ mkdir stuff
+</code></pre>
+
+<p>What just happened? With the shell no output is often good ouput, as some
+commands will only tell you something if there was an error. We did make
+a directory though, so let&rsquo;s check and see.</p>
+
+<pre><code class="language-bash">$ ls -l
+</code></pre>
+
+<p>You should see a stuff directory listed along with your other directories.
+Very cool. So now we have a directory, let&rsquo;s do stuff in it. While we could
+do things to the directory from up here in our home directory, it would be
+easier to do if we changed our working directory to the new one that we
+created. So let&rsquo;s do that.</p>
+
+<pre><code class="language-bash">$ cd stuff
+</code></pre>
+
+<p>Where are we now?</p>
+
+<pre><code class="language-bash">$ pwd
+</code></pre>
+
+<p>Ah, where in the stuff directory. cd changes your working directory, and you
+give it a path relative to where you are currently. Let&rsquo;s try going back and
+forth a few different ways.</p>
+
+<pre><code class="language-bash">$ cd ../
+</code></pre>
+
+<p>Where are we now?</p>
+
+<pre><code class="language-bash">$ pwd
+</code></pre>
+
+<p>We&rsquo;re back in our home directory. Let&rsquo;s go back to stuff, but this time we&rsquo;ll
+specify a path using a dot. This is another way to specify a relative path other
+than just typing in the name of the directory.</p>
+
+<pre><code class="language-bash">$ cd ./stuff
+</code></pre>
+
+<p>Where are we now?</p>
+
+<pre><code class="language-bash">$ pwd
+</code></pre>
+
+<p>We&rsquo;re back in stuff. Let&rsquo;s go back to home one more time, only this time we&rsquo;ll use
+a tilda, which is an alias that the system has for the current user&rsquo;s home directory.</p>
+
+<pre><code class="language-bash">$ cd ~
+</code></pre>
+
+<p>Where are we now?</p>
+
+<pre><code class="language-bash">$ pwd
+</code></pre>
+
+<p>We&rsquo;re back in the home directory. Let&rsquo;s use the tilda again, only this time we&rsquo;ll use
+it to get back to stuff.</p>
+
+<pre><code class="language-bash">$ cd ~/stuff
+</code></pre>
+
+<p>Where are we now?</p>
+
+<pre><code class="language-bash">$ pwd
+</code></pre>
+
+<p>We&rsquo;re back in stuff. Let&rsquo;s stay here for a while and do some stuff. We made a directory,
+but it&rsquo;s lonely in here.</p>
+
+<pre><code class="language-bash">$ ls -la
+</code></pre>
+
+<p>Let&rsquo;s make a file. We make a file by touching it.</p>
+
+<pre><code class="language-bash">$ touch foo.txt
+</code></pre>
+
+<p>And we&rsquo;ll check to see if it&rsquo;s there</p>
+
+<pre><code class="language-bash">$ ls -l
+</code></pre>
+
+<p>Sweet, we made a file. I wonder what&rsquo;s in the file. We can find out by printing it
+using cat, which concatenates the contents of the file to the terminal.</p>
+
+<pre><code class="language-bash">$ cat foo.txt
+</code></pre>
+
+<p>Commands that take a path, like cd, cat, or any of the commands that we&rsquo;ll
+soon cover; can take any valid path on the file system, so we could also
+write the previous command like this since it points to the same file:</p>
+
+<pre><code class="language-bash">$ cat ../stuff/foo.txt
+</code></pre>
+
+<p>So touch made an empty file. How boring. We can fix that though. Remember echo? By
+default echo outputs text to the terminal, but we can tell it to go somewhere else
+by redirecting it using right angle brackets (&gt;). One bracket will overwrite the file,
+while two will append to the file. Let&rsquo;s try it out:</p>
+
+<pre><code class="language-bash">$ echo 'Hello me!' &gt;&gt; foo.txt
+</code></pre>
+
+<p>and let&rsquo;s see what&rsquo;s in the file</p>
+
+<pre><code class="language-bash">$ cat foo.txt
+</code></pre>
+
+<p>and let&rsquo;s try it again.</p>
+
+<pre><code class="language-bash">$ echo 'Hello back at ya!' &gt;&gt; foo.txt
+</code></pre>
+
+<p>And check the results</p>
+
+<pre><code class="language-bash">$ cat foo.txt
+</code></pre>
+
+<p>This works for any command that has output, not just echo. Let&rsquo;s try it
+with the help output for less, a command we&rsquo;ll use in a second:</p>
+
+<pre><code class="language-bash">$ less --help &gt; foo.txt
+</code></pre>
+
+<p>Notice this time I used one angle bracket, Which will overwrite the file.</p>
+
+<pre><code class="language-bash">$ cat foo.txt
+</code></pre>
+
+<p>And we should see the help for less. This has all sorts of uses, from
+creating files that log the output of long running commands to quickly
+appending a line of text to a configuration file. The one instance where
+I use it all the time is to add directories and files to .gitignore files.</p>
+
+<p>Sometimes files are too big to view using cat, but there are other commands
+We can use to view files.</p>
+
+<p>less allows you to scroll and navigate large files. You can scroll through
+files using the up and down arrows, and quit by typing &ldquo;q&rdquo;. You can also search
+for something in the file by typing &ldquo;/&rdquo; followed by your search. You can
+type &ldquo;n&rdquo; and &ldquo;N&rdquo; to move to the next and previous search results respectively.
+Try searching for &ldquo;search&rdquo; in the file.</p>
+
+<pre><code class="language-bash">$ less foo.txt
+</code></pre>
+
+<p>We can also print out only the beginning or end of the files using head
+(for the beginning) or tail (for the end). You can specify how many lines
+you&rsquo;d like to print using the -n flag. These are used most often to look
+at log files. For example, if your program crashed and you want to check
+the end of the log, you would use tail. Log files can be very large, so
+often this is the best way to get information from them. Tail can also
+be used with the -f flag for &ldquo;follow&rdquo; in the case where a file is actively
+being written to.</p>
+
+<pre><code class="language-bash">$ head -n 35 foo.txt
+$ tail -n 20 foo.txt
+</code></pre>
+
+<p>Let&rsquo;s say you were interested in lines that contain a particular word, like
+an error in your log files. To find it we can use a utility called grep
+(don&rsquo;t ask why it&rsquo;s called grep, I don&rsquo;t personally know). Let&rsquo;s use it to
+search the directory for &ldquo;search&rdquo;. We&rsquo;ll use the &ldquo;r&rdquo; flag for recursive even
+though we don&rsquo;t have any subdirectories to search, just so you know how to
+use it if that&rsquo;s the case. Let&rsquo;s search for &ldquo;search&rdquo; in the directory.</p>
+
+<pre><code class="language-bash">$ grep -r &quot;search&quot; ./
+</code></pre>
+
+<p>Notice the arguments. First there are the flags, then the string we want to
+search for, then the directory we want to search.</p>
+
+<p>Just like we can use the right angle brackets to redirect to files, we can use
+left angle bracket (&lt;) to send files into some commands. Let&rsquo;s do this with grep
+to search just the file we&rsquo;re interested in.</p>
+
+<pre><code class="language-bash">$ grep &quot;search&quot; &lt; foo.txt
+</code></pre>
+
+<p>You can also tell grep to print out lines after or before the match using
+the A and B options respectively.</p>
+
+<pre><code class="language-bash">$ grep -A 1 &quot;search&quot; &lt; foo.txt
+</code></pre>
+
+<p>Foo is kind of a silly name for the file. Now that it contains help,
+let&rsquo;s rename the file by moving it. Moving with mv is how you
+rename files or move them from one directory to another.</p>
+
+<pre><code class="language-bash">$ mv foo.txt help.txt
+</code></pre>
+
+<p>And let&rsquo;s check the results</p>
+
+<pre><code class="language-bash">$ ls -l
+</code></pre>
+
+<p>Perfect. mv works on directories as well. What if we wanted
+to make a copy of the file, like a backup while we make changes
+to the original file. Let&rsquo;s use cp to do that.</p>
+
+<pre><code class="language-bash">$ cp help.txt help.txt.bak
+</code></pre>
+
+<p>And check the results</p>
+
+<pre><code class="language-bash">$ ls -l
+</code></pre>
+
+<p>cp works on directories when used with the -r flag, which stands
+for &ldquo;recursive&rdquo;. We&rsquo;re done with our changes, and we&rsquo;ve decided
+that we no longer need the backup file, so let&rsquo;s remove it with rm.</p>
+
+<pre><code class="language-bash">$ rm help.txt.bak
+</code></pre>
+
+<p>And check the results</p>
+
+<pre><code class="language-bash">$ ls -l
+</code></pre>
+
+<p>rm also works on directories when used with the r flag (rm -r) &ldquo;recursive&rdquo;.</p>
+
+<p>You may have noticed that commands in the shell are similar to functions
+in other languages; like JavaScript. They take arguments and return
+output. The shell also has variables as well, just like other programming
+langauges. You can access variables by putting a &ldquo;$&rdquo; before their name,
+and set them using the export command. There&rsquo;s a built in variable called
+&ldquo;HOME&rdquo; that contains the path to your home directory. Let&rsquo;s echo that and
+check the value.</p>
+
+<pre><code class="language-bash">$ echo $HOME
+</code></pre>
+
+<p>There is another built in variable called &ldquo;PS1&rdquo; that can be used to configure
+your command prompt, which is the text that appears to the left of your cursor
+in the shell. By default on most systems it doesn&rsquo;t display any useful information.
+On OSX it starts out displaying the bash version along with a &ldquo;$&rdquo; to tell you
+where the prompt ends. You customize your prompt by using various escape characters
+( a &ldquo;\&rdquo; followed by a letter is an escape character) to specify what data you&rsquo;d like
+to appear in the prmpt. You can see what escape characters you can use here:
+<a href="http://www.cyberciti.biz/tips/howto-linux-unix-bash-shell-setup-prompt.html">http://www.cyberciti.biz/tips/howto-linux-unix-bash-shell-setup-prompt.html</a>
+Let&rsquo;s set up our command prompt to show our current directory and some other useful
+info, although feel free to configure it any way you like. Notice that when I set
+a variable I don&rsquo;t use the &ldquo;$&rdquo; before it.</p>
+
+<pre><code class="language-bash">$ export PS1=&quot;\T \u@\h:\w ❯ &quot;
+</code></pre>
+
+<p>Exporting the variable will only set it in the current session though. If we want
+it to be this way every time we open up the terminal, we&rsquo;ll need to add it to a
+script that runs each time you do so. It&rsquo;s a dotfile in your home directory called
+&ldquo;.bashrc&rdquo;. We can quickly add this line to our bashrc using our old friend echo.
+Notice how I use single quotes instead of double quotes for the string. This is so
+we don&rsquo;t have double quotes inside double quotes.</p>
+
+<pre><code class="language-bash">$ echo 'export PS1=&quot;\T \u@\h:\w ❯ &quot;' &gt;&gt; ~/.bashrc
+</code></pre>
+
+<p>And let&rsquo;s take a look at our bashrc</p>
+
+<pre><code class="language-bash">$ cat ~/.bashrc
+</code></pre>
+
+<p>Your hostname might be something like &ldquo;Ryans-Macbook-Pro&rdquo;, which is fine, but if
+you&rsquo;d like to give your computer another name you can use the &lsquo;hostname&rsquo; command.
+In order to change the hostname we need to run the command as the root user, which
+has the power to do anything on the system. Be very careful running commands as
+root for that reason. We run the command as root using &ldquo;sudo&rdquo; before the command.
+It may ask for your user password, but it won&rsquo;t show the password as you type.</p>
+
+<p>I&rsquo;m going to set my hostname to &ldquo;lechuck&rdquo;&hellip;a character from my favorite old
+computer game &ldquo;The Secret of Monkey Island.&rdquo; Don&rsquo;t judge. ;)</p>
+
+<pre><code class="language-bash">$ sudo hostname lechuck
+</code></pre>
+
+<p>You&rsquo;ll need to start a new session if you want to see your new hostname in your
+prompt.</p>
+
+<p>Now that we&rsquo;re done with doing stuff in ~/stuff, let&rsquo;s remove the directory. To
+do that we&rsquo;ll need to cd back to home, and then rm the directory. You can do both
+in a single command by putting them on the same line with &ldquo;&amp;&amp;&rdquo; between them. You
+can think of &ldquo;&amp;&amp;&rdquo; like a boolean AND in other languages like JavaScript. It will
+only run the second command if the first command returns succssfully. You can also
+use &ldquo;&amp;&rdquo; if you want both commands to run regardless.</p>
+
+<pre><code class="language-bash">$ cd ../ &amp;&amp; rm -r stuff
+</code></pre>
+
+<p>We&rsquo;ve learned some basic terminal commands that are useful in many situations
+and will make you more productive as you start to remember them and use them
+frequently. So in closing:</p>
+
+<pre><code class="language-bash">$ echo &quot;You've taken your first step on the path of shell foo. Congrats!&quot;
+</code></pre>
+
+<p>Now on to <a href="/post/the-shell-by-example-part-2/">Part 2</a> where the real fun begins&hellip;</p>
+
+            <ul class="share-buttons">
+    <li></li>
+    <li>
+        <a class="icon-facebook-squared" href="https://www.facebook.com/sharer/sharer.php?u=http%3a%2f%2fwww.ryanlyn.ch%2fpost%2fthe-shell-by-example-part-1%2f" onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;" title=""></a>
+    </li>
+    <li>
+        <a class="icon-twitter" href="https://twitter.com/share?text=The%20Shell%20by%20Example%3a%20Part%201&amp;url=http%3a%2f%2fwww.ryanlyn.ch%2fpost%2fthe-shell-by-example-part-1%2f" onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;" title=""></a>
+    </li>
+    <li>
+        <a class="icon-gplus" href="https://plus.google.com/share?url=http%3a%2f%2fwww.ryanlyn.ch%2fpost%2fthe-shell-by-example-part-1%2f" onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;" title=""></a>
+    </li>
+    <li>
+        <a class="icon-linkedin" href="https://www.linkedin.com/shareArticle?mini=true&url=http%3a%2f%2fwww.ryanlyn.ch%2fpost%2fthe-shell-by-example-part-1%2f&title=The%20Shell%20by%20Example%3a%20Part%201" onclick="window.open(this.href, 'linkedin-share', 'width=600,height=494');return false;" title=""></a>
+    </li>
+</ul>
+
+        </article>
+        <div class="comments">
+            <h3></h3>
+            <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'ryanlynch';
+    var disqus_identifier = 'http:\/\/www.ryanlyn.ch\/post\/the-shell-by-example-part-1\/';
+    var disqus_title = 'The Shell by Example: Part 1';
+    var disqus_url = 'http:\/\/www.ryanlyn.ch\/post\/the-shell-by-example-part-1\/';
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+        </div>
+    </main>
+    <aside class="author">
+  <img class="profile-image" src="http://www.ryanlyn.chimg/ryan.jpg" alt="Ryan Lynch" />
+  <p class="name"> 
+  <strong>Ryan Lynch</strong></p>
+  <p class="address">Washington, DC USA</p>
+  <p class="link"></p>
+  <ul class="social">
+    
+<li><a href="//twitter.com/shiftyp" class="icon-twitter" target="_blank" title="Twitter"></a></li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<li><a href="//github.com/shiftyp" class="icon-github" target="_blank" title="Github"></a></li>
+
+
+
+
+<li><a href="http://www.ryanlyn.chpost/index.xml" class="icon-rss" target="_blank" title="RSS"></a></li>
+
+  </ul>
+  <br><br>
+</aside>
+
+</div>
+
+<footer class="main-footer">
+  <div class="container clearfix">
+        <a class="icon-rss" href="http://www.ryanlyn.chpost/index.xml" title="RSS"></a>
+        <p>&copy; 2015 &middot; Ryan Lynch, Powered by <a href="http://gohugo.io">Hugo</a>.</p>
+  </div>
+</footer>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.8.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script>window.jQuery || document.write('<script src="http:\/\/www.ryanlyn.chjs/vendor/jquery-1.11.0.min.js"><\/script>')</script>
+<script src="http://www.ryanlyn.chjs/plugins.js"></script>
+
+</body>
+</html>
+

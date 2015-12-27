@@ -1,0 +1,651 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Blog | Ryan Lynch</title>
+    <link>http://www.ryanlyn.ch/</link>
+    <description>Recent content on Blog | Ryan Lynch</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 25 Dec 2015 17:02:10 -0500</lastBuildDate>
+    <atom:link href="http://www.ryanlyn.ch/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>The Shell by Example: Part 2</title>
+      <link>http://www.ryanlyn.ch/post/the-shell-by-example-part-2/</link>
+      <pubDate>Fri, 25 Dec 2015 17:02:10 -0500</pubDate>
+      
+      <guid>http://www.ryanlyn.ch/post/the-shell-by-example-part-2/</guid>
+      <description>
+
+&lt;p&gt;In &lt;a href=&#34;http://www.ryanlyn.ch/post/the-shell-by-example-part-1/&#34;&gt;Part 1&lt;/a&gt; of this tutorial we learned some basics about the shell and a set of useful commands for navigating and dealing with files. Here in Part 2 we&amp;rsquo;ll cover some real world scenarios for using the shell, along with some more advanced commands and operators that really illustrate the power of the shell in performing everyday tasks. So let&amp;rsquo;s get started!&lt;/p&gt;
+
+&lt;h2 id=&#34;1-scaffolding-a-project:80a1f6395878fc3f1267400a70b6936d&#34;&gt;1. Scaffolding a Project&lt;/h2&gt;
+
+&lt;p&gt;Let&amp;rsquo;s say you&amp;rsquo;re starting a new project, and you&amp;rsquo;re not using &lt;a href=&#34;http://yeoman.io/&#34;&gt;Yeoman&lt;/a&gt; or some other tool that scaffolds it for you. You know generally what directories and files you want to create, so let&amp;rsquo;s do that through the shell instead of a series of right clicks in an editor or file explorer.&lt;/p&gt;
+
+&lt;p&gt;First you&amp;rsquo;ll want to make the root directory for the project. You create directories using the &lt;code&gt;mkdir&lt;/code&gt; command, which in it&amp;rsquo;s basic use takes the path of a single directory you&amp;rsquo;d like create. Once we&amp;rsquo;ve created our project directory, we&amp;rsquo;ll change our current working directory to the newly created project directory using &lt;code&gt;cd&lt;/code&gt; for change directory. Here&amp;rsquo;s the easiest way to do that:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ mkdir myproject &amp;amp;&amp;amp; cd $_
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;In part 1 we learned about the &lt;code&gt;&amp;amp;&amp;amp;&lt;/code&gt; operator, and how it can be used to run multiple commands in a single statement. We also learned about variables, and how a variable is read in a command by prefixing its name with a dollar sign. In this command, &lt;code&gt;$_&lt;/code&gt; is a variable that&amp;rsquo;s built into the shell, and it references the most recent parameter that was passed to a command. In this case we&amp;rsquo;ve just called &lt;code&gt;mkdir&lt;/code&gt; and passed &lt;code&gt;myproject&lt;/code&gt; as a parameter, so we can reuse that parameter and pass it to &lt;code&gt;cd&lt;/code&gt; by typing &lt;code&gt;cd $_&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;Now that we have a root directory for our project let&amp;rsquo;s create our subdirectories. We&amp;rsquo;ll use &lt;code&gt;mkdir&lt;/code&gt; again, but we&amp;rsquo;ll use a different syntax for the path that we pass to it. Instead of passing a single path and creating one directory, we&amp;rsquo;ll pass multiple paths and create our entire directory tree in one command:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ mkdir -p ./{src/{js/{components,stores,actions},css,html},build}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The curly braces denote lists of paths to create, and they can be nested to create subdirectories. The &lt;code&gt;-p&lt;/code&gt; option just says &amp;ldquo;make any directories that don&amp;rsquo;t exist&amp;rdquo;, which allows us to create nested directories along with their parent directories. Running this command creates The following directory structure in your current directory:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;- build
+- src
+	-js
+		- components
+		- stores
+		- actions
+	- html
+	- css
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;That&amp;rsquo;s a lot of action for a one liner, and it illustrates how powerful and expressive the shell can be when interacting with your operating system. Now that we have our directories, it would be nice to stub out some files that we plan on filling in later. We can create empty files using the &lt;code&gt;touch&lt;/code&gt; command. So let&amp;rsquo;s reach out and touch some files:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;touch ./{gulpfile.js,README.md,src/{js/main.js,css/main.scss,html/index.html}}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This uses the same syntax as the &lt;code&gt;mkdir&lt;/code&gt; command, only instead of listing directories, we&amp;rsquo;re listing files that we&amp;rsquo;d like to create. Now our directory looks like this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;- build
+- src
+	- js
+		- components
+		- stores
+		- actions
+		main.js
+	- css
+		main.sass
+	- html
+		index.html
+gulpfile.js
+README.md
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;2-appending-to-files:80a1f6395878fc3f1267400a70b6936d&#34;&gt;2. Appending to Files&lt;/h2&gt;
+
+&lt;p&gt;Continuing with the idea of creating a project; let&amp;rsquo;s say we know that we&amp;rsquo;ll want git to ignore &lt;code&gt;node_modules&lt;/code&gt; and &lt;code&gt;build&lt;/code&gt; once we get everything setup. We tell git to ignore files by putting a list of relative paths to ignore in a &lt;code&gt;.gitignore&lt;/code&gt; file. In part one we learned about using redirection along with echo to write lines to files. Here is how we&amp;rsquo;d accomplish this task using &lt;code&gt;echo&lt;/code&gt; along with redirection.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ echo &amp;quot;node_modules&amp;quot; &amp;gt;&amp;gt; .gitignore
+$ echo &amp;quot;build&amp;quot; &amp;gt;&amp;gt; .gitignore
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;There is another way however to write multiple lines to a file without having to repeat the command and redirection, and we can do that using a &amp;ldquo;here document&amp;rdquo;, also called a heredoc. Heredocs have several uses, but we&amp;rsquo;ll use it in this case to create a block of text that we&amp;rsquo;d like to append to our &lt;code&gt;.gitignore&lt;/code&gt; file.&lt;/p&gt;
+
+&lt;p&gt;We specify a heredoc by redirecting into a command using two left angle brackets and a limit string that will indicate when to close the heredoc. The standard is to use the string &lt;code&gt;EOF&lt;/code&gt; for &amp;ldquo;End of File&amp;rdquo;. This is essentially what the heredoc represents in this case, a sort of temporary file. Instead of using the &lt;code&gt;echo&lt;/code&gt; command, we&amp;rsquo;ll be using &lt;code&gt;cat&lt;/code&gt; for &amp;ldquo;concatenate&amp;rdquo;, which is like echo only it outputs the contents of files you pass to it. We&amp;rsquo;ll redirect the heredoc into &lt;code&gt;cat&lt;/code&gt; using two left angle brackets (&lt;code&gt;&amp;lt;&amp;lt;&lt;/code&gt;), and redirect the output into &lt;code&gt;.gitignore&lt;/code&gt; using two right angle brackets.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ cat &amp;lt;&amp;lt;EOF&amp;gt;&amp;gt; .gitignore
+&amp;gt; node_modules
+&amp;gt; build
+&amp;gt; EOF
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The right angle brackets on the lines following the command are output by the shell as a way of telling you are typing in a heredoc, so don&amp;rsquo;t type those out. We end the heredoc by typing the limit string &lt;code&gt;EOF&lt;/code&gt; on the last line, so the last &lt;code&gt;EOF&lt;/code&gt; does not show up in the file we&amp;rsquo;re redirecting to.&lt;/p&gt;
+
+&lt;h2 id=&#34;3-searching-log-files:80a1f6395878fc3f1267400a70b6936d&#34;&gt;3. Searching Log Files&lt;/h2&gt;
+
+&lt;p&gt;In Part 1 we covered &lt;code&gt;head&lt;/code&gt; and &lt;code&gt;tail&lt;/code&gt; for viewing the beginning and end of a file respectively. We also covered &lt;code&gt;grep&lt;/code&gt;, which can be used to search directories and files for a pattern. It&amp;rsquo;s possible to send the output of one command as the input to another, so we could use &lt;code&gt;tail&lt;/code&gt; and &lt;code&gt;grep&lt;/code&gt; to search the end of a file for some pattern.&lt;/p&gt;
+
+&lt;p&gt;An example might be searching an Apache server&amp;rsquo;s &lt;code&gt;access_log&lt;/code&gt;, which has a line for every request made to the server, for requests with a &lt;code&gt;400&lt;/code&gt; response code. We could use this to see what bad requests have been made to the server out of, say, the last 1000 requests. We send the output of a command to another by joining them with the pipe (&lt;code&gt;|&lt;/code&gt;) operator, like so:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ tail -n 1000 logs/access_log | grep &amp;quot; 400 &amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;First, this will take the last 1000 lines of the access_log, and then take those lines and send them to &lt;code&gt;grep&lt;/code&gt;, which will search for instances of the 400 response code. We can continue piping the output from &lt;code&gt;grep&lt;/code&gt; to another command if we like. For example, if we were interested only in the number of 400 responses, we could pipe from grep into the &lt;code&gt;wc&lt;/code&gt; (word count) utility. When used with the &lt;code&gt;-l&lt;/code&gt; flag, &lt;code&gt;wc&lt;/code&gt; returns the number of lines in a given file, or in this case in the output from grep:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ tail -n 1000 logs/access_log | grep &amp;quot; 400 &amp;quot; | wc -l
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;If there were 100 requests with a 400 response code in the last 1000 requests, this would output &lt;code&gt;100&lt;/code&gt;.&lt;/p&gt;
+
+&lt;h2 id=&#34;4-find-and-replace-in-source-files:80a1f6395878fc3f1267400a70b6936d&#34;&gt;4. Find and Replace in Source Files&lt;/h2&gt;
+
+&lt;p&gt;You&amp;rsquo;ve created a class called &lt;code&gt;FooMachine&lt;/code&gt;, and now you&amp;rsquo;d like to refactor it to be called &lt;code&gt;BarMachine&lt;/code&gt;. The problem is this is an integral class, and so it&amp;rsquo;s referenced in many of your source files. The file is called &lt;code&gt;foo-machine.js&lt;/code&gt;, the constructor is called &lt;code&gt;FooMachine&lt;/code&gt;, and there are several places where you store an instance in a variable called &lt;code&gt;fooMachine&lt;/code&gt;. You&amp;rsquo;d like to do a find and replace on all of these. We can do these replacements on an entire directory of files in a single command using the &lt;code&gt;perl&lt;/code&gt;, or the Practical Extraction and Report Language. PERL is a programming language, but we can use the command line interpreter to execute simple regular expressions&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ perl -pi -e &#39;s/FooMachine/BarMachine/g; s/fooMachine/barMachine/g; s/foo\-machine\.js/bar-machine.js/g&#39; ./**/*.js
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The &lt;code&gt;-p&lt;/code&gt; tells perl to assume a loop, which causes it to run on all lines of the file, the &lt;code&gt;-i&lt;/code&gt; tells it to edit the file in place, and the &lt;code&gt;-e&lt;/code&gt; indicates an expression we&amp;rsquo;d like to run. The &lt;code&gt;s&lt;/code&gt; in the expressions tells &lt;code&gt;perl&lt;/code&gt; that you&amp;rsquo;d like to do a replacement. The text after the first forward slash is the expression (note the escaping of certain characters using the backslash). The text following the second forward slash is the replacement, and the &lt;code&gt;g&lt;/code&gt; at the end tells &lt;code&gt;perl&lt;/code&gt; to replace all matches in the file. We separate the individual replacements we&amp;rsquo;d like to perform with semicolons.&lt;/p&gt;
+
+&lt;p&gt;Another common problem is having to re-indent source files. You prefer tab indentation (as I do), but your editor has been mistakenly outputting soft tabs (spaces) in all of your source files. Or the opposite case is true and you&amp;rsquo;d like to replace tabs with spaces. A simple regex with &lt;code&gt;perl&lt;/code&gt; can fix this as well.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;## Two spaces to tabs
+
+perl -pi -e &#39;s/  /\t/g&#39; ./**/*.js
+
+# Tabs to two spaces
+
+perl -pi -e &#39;s/\t/  /g&#39; ./**/*.js
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;5-testing-a-rest-api:80a1f6395878fc3f1267400a70b6936d&#34;&gt;5. Testing A REST API&lt;/h2&gt;
+
+&lt;p&gt;You&amp;rsquo;ve built your first REST server using node or some other platform. Congrats! Now you need to test it to make sure everything works. There are REST clients out there that will do this, but the command line is up to the task as well. &lt;code&gt;curl&lt;/code&gt; is a command line tool for making network requests, and it&amp;rsquo;s extremely powerful. Let&amp;rsquo;s use &lt;code&gt;curl&lt;/code&gt; to make a get request to a simple get request to an API endpoint. You&amp;rsquo;ll have to replace the url with your own of course.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;curl -i -X GET localhost:8080/echo/ryan
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;If your endpoint is working you&amp;rsquo;ll get the response to the request printed out to the console along with the response HTTP headers. If there is an error you&amp;rsquo;ll get that instead. The &lt;code&gt;-i&lt;/code&gt; flag tells &lt;code&gt;curl&lt;/code&gt; to print out the HTTP headers for the response. If you&amp;rsquo;d like to leave these out then simply remove the flag. &lt;code&gt;-X&lt;/code&gt; indicates the HTTP method we&amp;rsquo;d like to use, &lt;code&gt;GET&lt;/code&gt; in this case. Then we type out the url for the request. What about a POST request with some JSON?&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;curl -i -X POST -H &amp;quot;Content-type:text/json&amp;quot; -d &#39;{&amp;quot;foo&amp;quot;:&amp;quot;bar&amp;quot;}&#39; localhost:8080/echo
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This time we specified the &lt;code&gt;POST&lt;/code&gt; method, and we also used the &lt;code&gt;-d&lt;/code&gt; to indicate some data we&amp;rsquo;d like to send, followed by a JSON string. The &lt;code&gt;-H&lt;/code&gt; option allows us to pass an HTTP header with our request, so we set the content type of the request body to &lt;code&gt;text/json&lt;/code&gt;. You can repeat the &lt;code&gt;-H&lt;/code&gt; flag to specify additional headers. This is fine for a small amount of JSON, but what if we had a larger object we&amp;rsquo;d like to pass?&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;curl -i -X POST -H &amp;quot;Content-type:text/json&amp;quot; -d@- localhost:8080/echo &amp;lt;&amp;lt;-EOF
+&amp;gt; {
+&amp;gt; 	&amp;quot;foo&amp;quot;: &amp;quot;bar&amp;quot;
+&amp;gt; }
+&amp;gt; EOF
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;It&amp;rsquo;s our old friend heredoc to the rescue. Instead of just using the &lt;code&gt;-d&lt;/code&gt; flag, we specify &lt;code&gt;-d@-&lt;/code&gt; which indicates that we&amp;rsquo;d like to read our post data from a file. We could have redirected a file into the command, but we can also redirect a heredoc which allows us to type out our JSON in the terminal. You&amp;rsquo;ll notice that instead of using &lt;code&gt;&amp;lt;&amp;lt;EOF&lt;/code&gt;, I used &lt;code&gt;&amp;lt;&amp;lt;-EOF&lt;/code&gt; with a dash before the limit string. This allows you to indent the heredoc using tabs, which makes typing out JSON more natural and easier to read.&lt;/p&gt;
+
+&lt;p&gt;What if our API returns some JSON, and we&amp;rsquo;d like to print it out in a way that&amp;rsquo;s easy to read? Unfortunately there isn&amp;rsquo;t a built in command line tool for pretty printing JSON, but if you have Python installed on your system (which you will if you&amp;rsquo;re on OSX) you can pipe the curl output through a built in module called &lt;code&gt;json.tool&lt;/code&gt;.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;# For a POST
+
+curl -sS -X POST -H &amp;quot;Content-type:text/json&amp;quot; -d@- localhost:8080/echo &amp;lt;&amp;lt;-EOF | python -m json.tool
+&amp;gt; {
+&amp;gt; 	&amp;quot;foo&amp;quot;: &amp;quot;bar&amp;quot;
+&amp;gt; }
+&amp;gt; EOF
+
+# For a GET
+
+curl -sS -X GET localhost:8080/data | python -m json.tool
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Notice that this time I left off the &lt;code&gt;-i&lt;/code&gt; flag, because we don&amp;rsquo;t want the headers in the output that we&amp;rsquo;re passing to &lt;code&gt;json.tool&lt;/code&gt;. I&amp;rsquo;ve also added the &lt;code&gt;-s&lt;/code&gt; flag for &amp;ldquo;silent&amp;rdquo;, because when redirecting the output from curl it usually prints out some progress information, and I decided to supress that. I added the &lt;code&gt;-S&lt;/code&gt; flag however so that if there&amp;rsquo;s an error it will print that out regardless. If you&amp;rsquo;d like to display the progress info you can leave both of those off.&lt;/p&gt;
+
+&lt;h2 id=&#34;git-operations:80a1f6395878fc3f1267400a70b6936d&#34;&gt;Git Operations&lt;/h2&gt;
+
+&lt;p&gt;No discussion of the shell would be complete without discussing why you should use it for your git tasks. If you aren&amp;rsquo;t comfortable with the command line, chances are you&amp;rsquo;re using a gui git client. There are some tasks that I think are easier to perform using one. Staging files for example, especially staging parts of files, is easier to do when you have a quick way to view diffs and select files. I like to stay on the command line, or in my editor; so I use a program called &lt;a href=&#34;https://github.com/jonas/tig&#34;&gt;&lt;code&gt;tig&lt;/code&gt;&lt;/a&gt; for viewing diffs, viewing the commit history, and staging files. When I&amp;rsquo;m in my editor (which is &lt;code&gt;vim&lt;/code&gt;) I use a plugin called &lt;a href=&#34;http://vimcasts.org/blog/2011/05/the-fugitive-series/&#34;&gt;Fugitive&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;For most everything else though I use the command line for executing git operations. Here are some git commands that are an essential part of my workflow:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;# Initializing a git repository
+
+git init
+
+# Git commit, of course
+
+git commit -m &amp;quot;My commit message&amp;quot;
+
+# Creating a branch (in this case called my-new-branchname)
+
+git branch my-new-branchname
+
+# Checking out a branch
+
+# Just a quick note, if there is a branch on your remote
+# That you want to check out, this command will create
+# a tracking branch and check it out in one fell swoop.
+
+git checkout my-new-branchname
+
+# Checkout the previous commit. Just replace 1 with
+# however many commits you want to go back. This is
+# useful for seeing where a bug was introduced for
+# example. If you run this command twice you&#39;ll end
+# up two commits back. That&#39;s a tilda after the @ 
+# symbol.
+
+git checkout @~1
+
+# To go back to where you were, just checkout your branch
+# again.
+
+# Stashing your changes, if you want to merge and you&#39;re
+# not ready to commit your work for example. stash creates
+# a sort of temporary commit, so your changes are saved if
+# and you can get them back by applying the stash.
+
+git stash
+
+# And applying a stash once your done
+
+git stash apply
+
+# Or to apply and delete the stash
+
+git stash pop
+
+# The following commands will open up some output in
+# less, so the same navigation and exit commands apply
+
+# Get a list of filenames that have changed
+
+git diff --name-only
+
+# Search for commits with a particular message
+
+git log --grep=&amp;quot;Some part of the message, just like grep&amp;quot;
+
+# See all the commits where a particular file was modified
+
+git log src/js/main.js
+
+# Search only files that are committed in git, useful if
+# you want to exclude node_modules or some other ignored
+# directory like your build directory. Just like grep, 
+# only git grep.
+
+git grep &amp;quot;Some grep pattern&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;There are many others, like &lt;code&gt;git cherry pick&lt;/code&gt; and &lt;code&gt;git pull --rebase&lt;/code&gt;, that I often use, but those could be the subject of their own blog post. Git is a powerful utility, and so it has many features and takes a while to wrap your head around. You&amp;rsquo;ll learn git much faster if you get into the gitty gritty and use the command line to interact with it.&lt;/p&gt;
+
+&lt;h2 id=&#34;conclusion:80a1f6395878fc3f1267400a70b6936d&#34;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;These are just a few examples, tips and tricks really, that only scratch the surface of what you can do with the shell. We&amp;rsquo;ve covered several powerful and useful features though, from heredocs to pipes. Hopefully this has wet your appetite for learning the shell, and you&amp;rsquo;ll continue to use it and expand your vocabulary. The key to getting proficient at the shell isn&amp;rsquo;t magic, it&amp;rsquo;s just practice and repetition. It may take you a bit longer to do some tasks as you look up commands and read man pages, but as you become accustomed to it you&amp;rsquo;ll get faster, and pretty soon you&amp;rsquo;ll have some skills to pay the bills. So what the shell, why not give it a try?&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>The Shell by Example: Part 1</title>
+      <link>http://www.ryanlyn.ch/post/the-shell-by-example-part-1/</link>
+      <pubDate>Thu, 24 Dec 2015 10:57:30 -0500</pubDate>
+      
+      <guid>http://www.ryanlyn.ch/post/the-shell-by-example-part-1/</guid>
+      <description>&lt;p&gt;In a nutshell (see what I did there), the shell is a program that allows you to
+interact with the core of your operating system by executing commands. You may
+think that this is an antiquated way to work on a computer given that we have
+graphical interfaces that perform similar functions. There is a reason why
+we continue to use it though. If you have some working knowledge of how to use
+the shell you&amp;rsquo;ll find that many tasks can be performed much more efficiently
+compared to navigating menus and clicking with the mouse.&lt;/p&gt;
+
+&lt;p&gt;There are different shell programs, but the most commonly used and the one that
+you most likely have on your system is called &amp;ldquo;bash&amp;rdquo;. Some parts of this tutorial
+only relate to bash, so let&amp;rsquo;s check first that you&amp;rsquo;re using bash.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ echo $0
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;If it says &amp;ldquo;bash&amp;rdquo; then you&amp;rsquo;re good to go.&lt;/p&gt;
+
+&lt;p&gt;First, say hello to yourself&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ echo &#39;Hello me!&#39;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;echo is a more useful command than it might seem at first blush. We&amp;rsquo;ll see
+it again later.&lt;/p&gt;
+
+&lt;p&gt;Now that we&amp;rsquo;ve said hello, it might be a good idea to figure out where
+we are. When you&amp;rsquo;re working in the shell you&amp;rsquo;re always working in a
+directory on the filesystem. This directory is called your working
+directory, and by default the shell will start in what&amp;rsquo;s called your
+&amp;ldquo;home&amp;rdquo; directory. We can tell the shell to print out our current
+working directory by using the pwd command for &amp;ldquo;print working directory&amp;rdquo;:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ pwd
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This should output something like /Users/ryan for example, if you happen
+to be on an OSX machine and your username is &amp;ldquo;ryan&amp;rdquo;. Let&amp;rsquo;s take a look
+around and see what what&amp;rsquo;s in this directory.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ ls
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;ls displays a list of files and directories in the current working
+directory. Like many commands it has additional options that determine
+how it behaves. Many commands come with built in manuals, which we can
+access using the man command, followed by the command we want info on.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ man ls
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;If you see a command somewhere and want more info, check and see if it
+has a man page. Many commands have help that&amp;rsquo;s accessible by passing an
+argument to the command, usually -h or &amp;ndash;help. Let&amp;rsquo;s try man &amp;ndash;help.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ man --help
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Even if a command doesn&amp;rsquo;t have a man page, it may have a help argument
+to display basic usage information. Let&amp;rsquo;s try passing one of the most
+used options for ls, -l for &amp;ldquo;long form&amp;rdquo;.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ ls -l
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;the &amp;ldquo;l&amp;rdquo; flag tells ls that we want to display the list of files and
+directories in the long form, which shows additional information.
+Let&amp;rsquo;s try another.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ ls -a
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This time it probably displayed some additional files and directories
+starting with a &amp;ldquo;.&amp;rdquo;. These are called dotfiles, and they usually perform
+system functions. They are hidden from ls output normally for that reason.
+We can also combine them together by using both &amp;ldquo;l&amp;rdquo; and &amp;ldquo;a&amp;rdquo;:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ ls -la
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now we can see the dotfiles in the long form. Many commands allow you to
+combine options like this to configure how you want commands to behave.&lt;/p&gt;
+
+&lt;p&gt;So we&amp;rsquo;re in your home directory, and it&amp;rsquo;s traditionally the place on the
+system where you have free reign to put stuff. Since that&amp;rsquo;s the case,
+let&amp;rsquo;s create a new directory to put stuff in. (if you see a stuff directory
+in the ls output above pick a different name).&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ mkdir stuff
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;What just happened? With the shell no output is often good ouput, as some
+commands will only tell you something if there was an error. We did make
+a directory though, so let&amp;rsquo;s check and see.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ ls -l
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;You should see a stuff directory listed along with your other directories.
+Very cool. So now we have a directory, let&amp;rsquo;s do stuff in it. While we could
+do things to the directory from up here in our home directory, it would be
+easier to do if we changed our working directory to the new one that we
+created. So let&amp;rsquo;s do that.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ cd stuff
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Where are we now?&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ pwd
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Ah, where in the stuff directory. cd changes your working directory, and you
+give it a path relative to where you are currently. Let&amp;rsquo;s try going back and
+forth a few different ways.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ cd ../
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Where are we now?&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ pwd
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;We&amp;rsquo;re back in our home directory. Let&amp;rsquo;s go back to stuff, but this time we&amp;rsquo;ll
+specify a path using a dot. This is another way to specify a relative path other
+than just typing in the name of the directory.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ cd ./stuff
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Where are we now?&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ pwd
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;We&amp;rsquo;re back in stuff. Let&amp;rsquo;s go back to home one more time, only this time we&amp;rsquo;ll use
+a tilda, which is an alias that the system has for the current user&amp;rsquo;s home directory.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ cd ~
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Where are we now?&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ pwd
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;We&amp;rsquo;re back in the home directory. Let&amp;rsquo;s use the tilda again, only this time we&amp;rsquo;ll use
+it to get back to stuff.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ cd ~/stuff
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Where are we now?&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ pwd
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;We&amp;rsquo;re back in stuff. Let&amp;rsquo;s stay here for a while and do some stuff. We made a directory,
+but it&amp;rsquo;s lonely in here.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ ls -la
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Let&amp;rsquo;s make a file. We make a file by touching it.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ touch foo.txt
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;And we&amp;rsquo;ll check to see if it&amp;rsquo;s there&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ ls -l
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Sweet, we made a file. I wonder what&amp;rsquo;s in the file. We can find out by printing it
+using cat, which concatenates the contents of the file to the terminal.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ cat foo.txt
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Commands that take a path, like cd, cat, or any of the commands that we&amp;rsquo;ll
+soon cover; can take any valid path on the file system, so we could also
+write the previous command like this since it points to the same file:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ cat ../stuff/foo.txt
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;So touch made an empty file. How boring. We can fix that though. Remember echo? By
+default echo outputs text to the terminal, but we can tell it to go somewhere else
+by redirecting it using right angle brackets (&amp;gt;). One bracket will overwrite the file,
+while two will append to the file. Let&amp;rsquo;s try it out:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ echo &#39;Hello me!&#39; &amp;gt;&amp;gt; foo.txt
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;and let&amp;rsquo;s see what&amp;rsquo;s in the file&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ cat foo.txt
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;and let&amp;rsquo;s try it again.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ echo &#39;Hello back at ya!&#39; &amp;gt;&amp;gt; foo.txt
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;And check the results&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ cat foo.txt
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This works for any command that has output, not just echo. Let&amp;rsquo;s try it
+with the help output for less, a command we&amp;rsquo;ll use in a second:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ less --help &amp;gt; foo.txt
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Notice this time I used one angle bracket, Which will overwrite the file.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ cat foo.txt
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;And we should see the help for less. This has all sorts of uses, from
+creating files that log the output of long running commands to quickly
+appending a line of text to a configuration file. The one instance where
+I use it all the time is to add directories and files to .gitignore files.&lt;/p&gt;
+
+&lt;p&gt;Sometimes files are too big to view using cat, but there are other commands
+We can use to view files.&lt;/p&gt;
+
+&lt;p&gt;less allows you to scroll and navigate large files. You can scroll through
+files using the up and down arrows, and quit by typing &amp;ldquo;q&amp;rdquo;. You can also search
+for something in the file by typing &amp;ldquo;/&amp;rdquo; followed by your search. You can
+type &amp;ldquo;n&amp;rdquo; and &amp;ldquo;N&amp;rdquo; to move to the next and previous search results respectively.
+Try searching for &amp;ldquo;search&amp;rdquo; in the file.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ less foo.txt
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;We can also print out only the beginning or end of the files using head
+(for the beginning) or tail (for the end). You can specify how many lines
+you&amp;rsquo;d like to print using the -n flag. These are used most often to look
+at log files. For example, if your program crashed and you want to check
+the end of the log, you would use tail. Log files can be very large, so
+often this is the best way to get information from them. Tail can also
+be used with the -f flag for &amp;ldquo;follow&amp;rdquo; in the case where a file is actively
+being written to.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ head -n 35 foo.txt
+$ tail -n 20 foo.txt
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Let&amp;rsquo;s say you were interested in lines that contain a particular word, like
+an error in your log files. To find it we can use a utility called grep
+(don&amp;rsquo;t ask why it&amp;rsquo;s called grep, I don&amp;rsquo;t personally know). Let&amp;rsquo;s use it to
+search the directory for &amp;ldquo;search&amp;rdquo;. We&amp;rsquo;ll use the &amp;ldquo;r&amp;rdquo; flag for recursive even
+though we don&amp;rsquo;t have any subdirectories to search, just so you know how to
+use it if that&amp;rsquo;s the case. Let&amp;rsquo;s search for &amp;ldquo;search&amp;rdquo; in the directory.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ grep -r &amp;quot;search&amp;quot; ./
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Notice the arguments. First there are the flags, then the string we want to
+search for, then the directory we want to search.&lt;/p&gt;
+
+&lt;p&gt;Just like we can use the right angle brackets to redirect to files, we can use
+left angle bracket (&amp;lt;) to send files into some commands. Let&amp;rsquo;s do this with grep
+to search just the file we&amp;rsquo;re interested in.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ grep &amp;quot;search&amp;quot; &amp;lt; foo.txt
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;You can also tell grep to print out lines after or before the match using
+the A and B options respectively.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ grep -A 1 &amp;quot;search&amp;quot; &amp;lt; foo.txt
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Foo is kind of a silly name for the file. Now that it contains help,
+let&amp;rsquo;s rename the file by moving it. Moving with mv is how you
+rename files or move them from one directory to another.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ mv foo.txt help.txt
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;And let&amp;rsquo;s check the results&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ ls -l
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Perfect. mv works on directories as well. What if we wanted
+to make a copy of the file, like a backup while we make changes
+to the original file. Let&amp;rsquo;s use cp to do that.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ cp help.txt help.txt.bak
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;And check the results&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ ls -l
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;cp works on directories when used with the -r flag, which stands
+for &amp;ldquo;recursive&amp;rdquo;. We&amp;rsquo;re done with our changes, and we&amp;rsquo;ve decided
+that we no longer need the backup file, so let&amp;rsquo;s remove it with rm.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ rm help.txt.bak
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;And check the results&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ ls -l
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;rm also works on directories when used with the r flag (rm -r) &amp;ldquo;recursive&amp;rdquo;.&lt;/p&gt;
+
+&lt;p&gt;You may have noticed that commands in the shell are similar to functions
+in other languages; like JavaScript. They take arguments and return
+output. The shell also has variables as well, just like other programming
+langauges. You can access variables by putting a &amp;ldquo;$&amp;rdquo; before their name,
+and set them using the export command. There&amp;rsquo;s a built in variable called
+&amp;ldquo;HOME&amp;rdquo; that contains the path to your home directory. Let&amp;rsquo;s echo that and
+check the value.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ echo $HOME
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;There is another built in variable called &amp;ldquo;PS1&amp;rdquo; that can be used to configure
+your command prompt, which is the text that appears to the left of your cursor
+in the shell. By default on most systems it doesn&amp;rsquo;t display any useful information.
+On OSX it starts out displaying the bash version along with a &amp;ldquo;$&amp;rdquo; to tell you
+where the prompt ends. You customize your prompt by using various escape characters
+( a &amp;ldquo;\&amp;rdquo; followed by a letter is an escape character) to specify what data you&amp;rsquo;d like
+to appear in the prmpt. You can see what escape characters you can use here:
+&lt;a href=&#34;http://www.cyberciti.biz/tips/howto-linux-unix-bash-shell-setup-prompt.html&#34;&gt;http://www.cyberciti.biz/tips/howto-linux-unix-bash-shell-setup-prompt.html&lt;/a&gt;
+Let&amp;rsquo;s set up our command prompt to show our current directory and some other useful
+info, although feel free to configure it any way you like. Notice that when I set
+a variable I don&amp;rsquo;t use the &amp;ldquo;$&amp;rdquo; before it.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ export PS1=&amp;quot;\T \u@\h:\w ❯ &amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Exporting the variable will only set it in the current session though. If we want
+it to be this way every time we open up the terminal, we&amp;rsquo;ll need to add it to a
+script that runs each time you do so. It&amp;rsquo;s a dotfile in your home directory called
+&amp;ldquo;.bashrc&amp;rdquo;. We can quickly add this line to our bashrc using our old friend echo.
+Notice how I use single quotes instead of double quotes for the string. This is so
+we don&amp;rsquo;t have double quotes inside double quotes.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ echo &#39;export PS1=&amp;quot;\T \u@\h:\w ❯ &amp;quot;&#39; &amp;gt;&amp;gt; ~/.bashrc
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;And let&amp;rsquo;s take a look at our bashrc&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ cat ~/.bashrc
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Your hostname might be something like &amp;ldquo;Ryans-Macbook-Pro&amp;rdquo;, which is fine, but if
+you&amp;rsquo;d like to give your computer another name you can use the &amp;lsquo;hostname&amp;rsquo; command.
+In order to change the hostname we need to run the command as the root user, which
+has the power to do anything on the system. Be very careful running commands as
+root for that reason. We run the command as root using &amp;ldquo;sudo&amp;rdquo; before the command.
+It may ask for your user password, but it won&amp;rsquo;t show the password as you type.&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;m going to set my hostname to &amp;ldquo;lechuck&amp;rdquo;&amp;hellip;a character from my favorite old
+computer game &amp;ldquo;The Secret of Monkey Island.&amp;rdquo; Don&amp;rsquo;t judge. ;)&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ sudo hostname lechuck
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;You&amp;rsquo;ll need to start a new session if you want to see your new hostname in your
+prompt.&lt;/p&gt;
+
+&lt;p&gt;Now that we&amp;rsquo;re done with doing stuff in ~/stuff, let&amp;rsquo;s remove the directory. To
+do that we&amp;rsquo;ll need to cd back to home, and then rm the directory. You can do both
+in a single command by putting them on the same line with &amp;ldquo;&amp;amp;&amp;amp;&amp;rdquo; between them. You
+can think of &amp;ldquo;&amp;amp;&amp;amp;&amp;rdquo; like a boolean AND in other languages like JavaScript. It will
+only run the second command if the first command returns succssfully. You can also
+use &amp;ldquo;&amp;amp;&amp;rdquo; if you want both commands to run regardless.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ cd ../ &amp;amp;&amp;amp; rm -r stuff
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;We&amp;rsquo;ve learned some basic terminal commands that are useful in many situations
+and will make you more productive as you start to remember them and use them
+frequently. So in closing:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ echo &amp;quot;You&#39;ve taken your first step on the path of shell foo. Congrats!&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now on to &lt;a href=&#34;http://www.ryanlyn.ch/post/the-shell-by-example-part-2/&#34;&gt;Part 2&lt;/a&gt; where the real fun begins&amp;hellip;&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

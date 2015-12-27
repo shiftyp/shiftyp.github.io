@@ -1,0 +1,375 @@
+<!doctype html>
+<html class="no-js">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Blog | Ryan Lynch</title>
+        <meta name="author">
+        <meta name="description" content="The technical blog of Ryan Lynch">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="generator" content="Hugo 0.15" />
+          <link href="http://www.ryanlyn.chpost/index.xml" rel="alternate" type="application/rss+xml" title="Blog | Ryan Lynch" />
+          <link href="http://www.ryanlyn.chpost/index.xml" rel="feed" type="application/rss+xml" title="Blog | Ryan Lynch" />
+        <link href='//fonts.googleapis.com/css?family=Roboto:400,300,700|Noto+Serif:400,400italic,700,700italic' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="http://www.ryanlyn.chcss/styles.css">
+        <link rel="icon" href="http://www.ryanlyn.chfavicon.ico">
+        <link rel="apple-touch-icon" href="http://www.ryanlyn.chapple-touch-icon.png" />
+        <link rel="stylesheet" href="http://www.ryanlyn.chcss/highlightjs/monokai.css">
+        <script src="http://www.ryanlyn.chjs/vendor/modernizr-2.8.0.min.js"></script>
+				<style>
+				body {
+					tab-size: 2;
+				}
+        .site-header h2 .logo {
+        background: url(http://www.ryanlyn.chimg/concert.jpg) no-repeat 0 0;
+        }
+        @media (min--moz-device-pixel-ratio: 1.3), (-o-min-device-pixel-ratio: 2.6 / 2), (-webkit-min-device-pixel-ratio: 1.3), (min-device-pixel-ratio: 1.3), (min-resolution: 1.3dppx) {
+          .site-header h2 .logo {
+            background-image: url(http://www.ryanlyn.chimg/concert.jpg);
+        }}
+       .site-header {
+         background: #2a373d url(http://www.ryanlyn.chimg/concert.jpg) no-repeat center center;
+				 background-size: 100%;
+         z-index: -1;
+        }
+        </style>
+    </head>
+    <body>
+        
+        <header class="site-header">
+          <div class="transparent-layer">
+              <h2>Rock Out with your Laptop Out</h2>
+          </div>
+        </header>
+
+
+<div class="container clearfix">
+    <main role="main" class="content">
+        <article class="post">
+            <a class="btn" href="http://www.ryanlyn.ch" title="">&laquo; </a>
+            
+<h1><a href="http://www.ryanlyn.ch/post/the-shell-by-example-part-2/" title="The Shell by Example: Part 2">The Shell by Example: Part 2</a></h1>
+
+<footer class="post-info"> <span class="post-meta"><time datetime="2015.12.25">2015.12.25</time>
+
+</span>
+</footer>
+
+            
+
+<p>In <a href="/post/the-shell-by-example-part-1/">Part 1</a> of this tutorial we learned some basics about the shell and a set of useful commands for navigating and dealing with files. Here in Part 2 we&rsquo;ll cover some real world scenarios for using the shell, along with some more advanced commands and operators that really illustrate the power of the shell in performing everyday tasks. So let&rsquo;s get started!</p>
+
+<h2 id="1-scaffolding-a-project:80a1f6395878fc3f1267400a70b6936d">1. Scaffolding a Project</h2>
+
+<p>Let&rsquo;s say you&rsquo;re starting a new project, and you&rsquo;re not using <a href="http://yeoman.io/">Yeoman</a> or some other tool that scaffolds it for you. You know generally what directories and files you want to create, so let&rsquo;s do that through the shell instead of a series of right clicks in an editor or file explorer.</p>
+
+<p>First you&rsquo;ll want to make the root directory for the project. You create directories using the <code>mkdir</code> command, which in it&rsquo;s basic use takes the path of a single directory you&rsquo;d like create. Once we&rsquo;ve created our project directory, we&rsquo;ll change our current working directory to the newly created project directory using <code>cd</code> for change directory. Here&rsquo;s the easiest way to do that:</p>
+
+<pre><code class="language-bash">$ mkdir myproject &amp;&amp; cd $_
+</code></pre>
+
+<p>In part 1 we learned about the <code>&amp;&amp;</code> operator, and how it can be used to run multiple commands in a single statement. We also learned about variables, and how a variable is read in a command by prefixing its name with a dollar sign. In this command, <code>$_</code> is a variable that&rsquo;s built into the shell, and it references the most recent parameter that was passed to a command. In this case we&rsquo;ve just called <code>mkdir</code> and passed <code>myproject</code> as a parameter, so we can reuse that parameter and pass it to <code>cd</code> by typing <code>cd $_</code>.</p>
+
+<p>Now that we have a root directory for our project let&rsquo;s create our subdirectories. We&rsquo;ll use <code>mkdir</code> again, but we&rsquo;ll use a different syntax for the path that we pass to it. Instead of passing a single path and creating one directory, we&rsquo;ll pass multiple paths and create our entire directory tree in one command:</p>
+
+<pre><code class="language-bash">$ mkdir -p ./{src/{js/{components,stores,actions},css,html},build}
+</code></pre>
+
+<p>The curly braces denote lists of paths to create, and they can be nested to create subdirectories. The <code>-p</code> option just says &ldquo;make any directories that don&rsquo;t exist&rdquo;, which allows us to create nested directories along with their parent directories. Running this command creates The following directory structure in your current directory:</p>
+
+<pre><code class="language-bash">- build
+- src
+	-js
+		- components
+		- stores
+		- actions
+	- html
+	- css
+</code></pre>
+
+<p>That&rsquo;s a lot of action for a one liner, and it illustrates how powerful and expressive the shell can be when interacting with your operating system. Now that we have our directories, it would be nice to stub out some files that we plan on filling in later. We can create empty files using the <code>touch</code> command. So let&rsquo;s reach out and touch some files:</p>
+
+<pre><code>touch ./{gulpfile.js,README.md,src/{js/main.js,css/main.scss,html/index.html}}
+</code></pre>
+
+<p>This uses the same syntax as the <code>mkdir</code> command, only instead of listing directories, we&rsquo;re listing files that we&rsquo;d like to create. Now our directory looks like this:</p>
+
+<pre><code class="language-bash">- build
+- src
+	- js
+		- components
+		- stores
+		- actions
+		main.js
+	- css
+		main.sass
+	- html
+		index.html
+gulpfile.js
+README.md
+</code></pre>
+
+<h2 id="2-appending-to-files:80a1f6395878fc3f1267400a70b6936d">2. Appending to Files</h2>
+
+<p>Continuing with the idea of creating a project; let&rsquo;s say we know that we&rsquo;ll want git to ignore <code>node_modules</code> and <code>build</code> once we get everything setup. We tell git to ignore files by putting a list of relative paths to ignore in a <code>.gitignore</code> file. In part one we learned about using redirection along with echo to write lines to files. Here is how we&rsquo;d accomplish this task using <code>echo</code> along with redirection.</p>
+
+<pre><code class="language-bash">$ echo &quot;node_modules&quot; &gt;&gt; .gitignore
+$ echo &quot;build&quot; &gt;&gt; .gitignore
+</code></pre>
+
+<p>There is another way however to write multiple lines to a file without having to repeat the command and redirection, and we can do that using a &ldquo;here document&rdquo;, also called a heredoc. Heredocs have several uses, but we&rsquo;ll use it in this case to create a block of text that we&rsquo;d like to append to our <code>.gitignore</code> file.</p>
+
+<p>We specify a heredoc by redirecting into a command using two left angle brackets and a limit string that will indicate when to close the heredoc. The standard is to use the string <code>EOF</code> for &ldquo;End of File&rdquo;. This is essentially what the heredoc represents in this case, a sort of temporary file. Instead of using the <code>echo</code> command, we&rsquo;ll be using <code>cat</code> for &ldquo;concatenate&rdquo;, which is like echo only it outputs the contents of files you pass to it. We&rsquo;ll redirect the heredoc into <code>cat</code> using two left angle brackets (<code>&lt;&lt;</code>), and redirect the output into <code>.gitignore</code> using two right angle brackets.</p>
+
+<pre><code class="language-bash">$ cat &lt;&lt;EOF&gt;&gt; .gitignore
+&gt; node_modules
+&gt; build
+&gt; EOF
+</code></pre>
+
+<p>The right angle brackets on the lines following the command are output by the shell as a way of telling you are typing in a heredoc, so don&rsquo;t type those out. We end the heredoc by typing the limit string <code>EOF</code> on the last line, so the last <code>EOF</code> does not show up in the file we&rsquo;re redirecting to.</p>
+
+<h2 id="3-searching-log-files:80a1f6395878fc3f1267400a70b6936d">3. Searching Log Files</h2>
+
+<p>In Part 1 we covered <code>head</code> and <code>tail</code> for viewing the beginning and end of a file respectively. We also covered <code>grep</code>, which can be used to search directories and files for a pattern. It&rsquo;s possible to send the output of one command as the input to another, so we could use <code>tail</code> and <code>grep</code> to search the end of a file for some pattern.</p>
+
+<p>An example might be searching an Apache server&rsquo;s <code>access_log</code>, which has a line for every request made to the server, for requests with a <code>400</code> response code. We could use this to see what bad requests have been made to the server out of, say, the last 1000 requests. We send the output of a command to another by joining them with the pipe (<code>|</code>) operator, like so:</p>
+
+<pre><code class="language-bash">$ tail -n 1000 logs/access_log | grep &quot; 400 &quot;
+</code></pre>
+
+<p>First, this will take the last 1000 lines of the access_log, and then take those lines and send them to <code>grep</code>, which will search for instances of the 400 response code. We can continue piping the output from <code>grep</code> to another command if we like. For example, if we were interested only in the number of 400 responses, we could pipe from grep into the <code>wc</code> (word count) utility. When used with the <code>-l</code> flag, <code>wc</code> returns the number of lines in a given file, or in this case in the output from grep:</p>
+
+<pre><code class="language-bash">$ tail -n 1000 logs/access_log | grep &quot; 400 &quot; | wc -l
+</code></pre>
+
+<p>If there were 100 requests with a 400 response code in the last 1000 requests, this would output <code>100</code>.</p>
+
+<h2 id="4-find-and-replace-in-source-files:80a1f6395878fc3f1267400a70b6936d">4. Find and Replace in Source Files</h2>
+
+<p>You&rsquo;ve created a class called <code>FooMachine</code>, and now you&rsquo;d like to refactor it to be called <code>BarMachine</code>. The problem is this is an integral class, and so it&rsquo;s referenced in many of your source files. The file is called <code>foo-machine.js</code>, the constructor is called <code>FooMachine</code>, and there are several places where you store an instance in a variable called <code>fooMachine</code>. You&rsquo;d like to do a find and replace on all of these. We can do these replacements on an entire directory of files in a single command using the <code>perl</code>, or the Practical Extraction and Report Language. PERL is a programming language, but we can use the command line interpreter to execute simple regular expressions</p>
+
+<pre><code class="language-bash">$ perl -pi -e 's/FooMachine/BarMachine/g; s/fooMachine/barMachine/g; s/foo\-machine\.js/bar-machine.js/g' ./**/*.js
+</code></pre>
+
+<p>The <code>-p</code> tells perl to assume a loop, which causes it to run on all lines of the file, the <code>-i</code> tells it to edit the file in place, and the <code>-e</code> indicates an expression we&rsquo;d like to run. The <code>s</code> in the expressions tells <code>perl</code> that you&rsquo;d like to do a replacement. The text after the first forward slash is the expression (note the escaping of certain characters using the backslash). The text following the second forward slash is the replacement, and the <code>g</code> at the end tells <code>perl</code> to replace all matches in the file. We separate the individual replacements we&rsquo;d like to perform with semicolons.</p>
+
+<p>Another common problem is having to re-indent source files. You prefer tab indentation (as I do), but your editor has been mistakenly outputting soft tabs (spaces) in all of your source files. Or the opposite case is true and you&rsquo;d like to replace tabs with spaces. A simple regex with <code>perl</code> can fix this as well.</p>
+
+<pre><code class="language-bash">## Two spaces to tabs
+
+perl -pi -e 's/  /\t/g' ./**/*.js
+
+# Tabs to two spaces
+
+perl -pi -e 's/\t/  /g' ./**/*.js
+</code></pre>
+
+<h2 id="5-testing-a-rest-api:80a1f6395878fc3f1267400a70b6936d">5. Testing A REST API</h2>
+
+<p>You&rsquo;ve built your first REST server using node or some other platform. Congrats! Now you need to test it to make sure everything works. There are REST clients out there that will do this, but the command line is up to the task as well. <code>curl</code> is a command line tool for making network requests, and it&rsquo;s extremely powerful. Let&rsquo;s use <code>curl</code> to make a get request to a simple get request to an API endpoint. You&rsquo;ll have to replace the url with your own of course.</p>
+
+<pre><code class="language-bash">curl -i -X GET localhost:8080/echo/ryan
+</code></pre>
+
+<p>If your endpoint is working you&rsquo;ll get the response to the request printed out to the console along with the response HTTP headers. If there is an error you&rsquo;ll get that instead. The <code>-i</code> flag tells <code>curl</code> to print out the HTTP headers for the response. If you&rsquo;d like to leave these out then simply remove the flag. <code>-X</code> indicates the HTTP method we&rsquo;d like to use, <code>GET</code> in this case. Then we type out the url for the request. What about a POST request with some JSON?</p>
+
+<pre><code class="language-bash">curl -i -X POST -H &quot;Content-type:text/json&quot; -d '{&quot;foo&quot;:&quot;bar&quot;}' localhost:8080/echo
+</code></pre>
+
+<p>This time we specified the <code>POST</code> method, and we also used the <code>-d</code> to indicate some data we&rsquo;d like to send, followed by a JSON string. The <code>-H</code> option allows us to pass an HTTP header with our request, so we set the content type of the request body to <code>text/json</code>. You can repeat the <code>-H</code> flag to specify additional headers. This is fine for a small amount of JSON, but what if we had a larger object we&rsquo;d like to pass?</p>
+
+<pre><code class="language-bash">curl -i -X POST -H &quot;Content-type:text/json&quot; -d@- localhost:8080/echo &lt;&lt;-EOF
+&gt; {
+&gt; 	&quot;foo&quot;: &quot;bar&quot;
+&gt; }
+&gt; EOF
+</code></pre>
+
+<p>It&rsquo;s our old friend heredoc to the rescue. Instead of just using the <code>-d</code> flag, we specify <code>-d@-</code> which indicates that we&rsquo;d like to read our post data from a file. We could have redirected a file into the command, but we can also redirect a heredoc which allows us to type out our JSON in the terminal. You&rsquo;ll notice that instead of using <code>&lt;&lt;EOF</code>, I used <code>&lt;&lt;-EOF</code> with a dash before the limit string. This allows you to indent the heredoc using tabs, which makes typing out JSON more natural and easier to read.</p>
+
+<p>What if our API returns some JSON, and we&rsquo;d like to print it out in a way that&rsquo;s easy to read? Unfortunately there isn&rsquo;t a built in command line tool for pretty printing JSON, but if you have Python installed on your system (which you will if you&rsquo;re on OSX) you can pipe the curl output through a built in module called <code>json.tool</code>.</p>
+
+<pre><code class="language-bash"># For a POST
+
+curl -sS -X POST -H &quot;Content-type:text/json&quot; -d@- localhost:8080/echo &lt;&lt;-EOF | python -m json.tool
+&gt; {
+&gt; 	&quot;foo&quot;: &quot;bar&quot;
+&gt; }
+&gt; EOF
+
+# For a GET
+
+curl -sS -X GET localhost:8080/data | python -m json.tool
+</code></pre>
+
+<p>Notice that this time I left off the <code>-i</code> flag, because we don&rsquo;t want the headers in the output that we&rsquo;re passing to <code>json.tool</code>. I&rsquo;ve also added the <code>-s</code> flag for &ldquo;silent&rdquo;, because when redirecting the output from curl it usually prints out some progress information, and I decided to supress that. I added the <code>-S</code> flag however so that if there&rsquo;s an error it will print that out regardless. If you&rsquo;d like to display the progress info you can leave both of those off.</p>
+
+<h2 id="git-operations:80a1f6395878fc3f1267400a70b6936d">Git Operations</h2>
+
+<p>No discussion of the shell would be complete without discussing why you should use it for your git tasks. If you aren&rsquo;t comfortable with the command line, chances are you&rsquo;re using a gui git client. There are some tasks that I think are easier to perform using one. Staging files for example, especially staging parts of files, is easier to do when you have a quick way to view diffs and select files. I like to stay on the command line, or in my editor; so I use a program called <a href="https://github.com/jonas/tig"><code>tig</code></a> for viewing diffs, viewing the commit history, and staging files. When I&rsquo;m in my editor (which is <code>vim</code>) I use a plugin called <a href="http://vimcasts.org/blog/2011/05/the-fugitive-series/">Fugitive</a>.</p>
+
+<p>For most everything else though I use the command line for executing git operations. Here are some git commands that are an essential part of my workflow:</p>
+
+<pre><code class="language-bash"># Initializing a git repository
+
+git init
+
+# Git commit, of course
+
+git commit -m &quot;My commit message&quot;
+
+# Creating a branch (in this case called my-new-branchname)
+
+git branch my-new-branchname
+
+# Checking out a branch
+
+# Just a quick note, if there is a branch on your remote
+# That you want to check out, this command will create
+# a tracking branch and check it out in one fell swoop.
+
+git checkout my-new-branchname
+
+# Checkout the previous commit. Just replace 1 with
+# however many commits you want to go back. This is
+# useful for seeing where a bug was introduced for
+# example. If you run this command twice you'll end
+# up two commits back. That's a tilda after the @ 
+# symbol.
+
+git checkout @~1
+
+# To go back to where you were, just checkout your branch
+# again.
+
+# Stashing your changes, if you want to merge and you're
+# not ready to commit your work for example. stash creates
+# a sort of temporary commit, so your changes are saved if
+# and you can get them back by applying the stash.
+
+git stash
+
+# And applying a stash once your done
+
+git stash apply
+
+# Or to apply and delete the stash
+
+git stash pop
+
+# The following commands will open up some output in
+# less, so the same navigation and exit commands apply
+
+# Get a list of filenames that have changed
+
+git diff --name-only
+
+# Search for commits with a particular message
+
+git log --grep=&quot;Some part of the message, just like grep&quot;
+
+# See all the commits where a particular file was modified
+
+git log src/js/main.js
+
+# Search only files that are committed in git, useful if
+# you want to exclude node_modules or some other ignored
+# directory like your build directory. Just like grep, 
+# only git grep.
+
+git grep &quot;Some grep pattern&quot;
+</code></pre>
+
+<p>There are many others, like <code>git cherry pick</code> and <code>git pull --rebase</code>, that I often use, but those could be the subject of their own blog post. Git is a powerful utility, and so it has many features and takes a while to wrap your head around. You&rsquo;ll learn git much faster if you get into the gitty gritty and use the command line to interact with it.</p>
+
+<h2 id="conclusion:80a1f6395878fc3f1267400a70b6936d">Conclusion</h2>
+
+<p>These are just a few examples, tips and tricks really, that only scratch the surface of what you can do with the shell. We&rsquo;ve covered several powerful and useful features though, from heredocs to pipes. Hopefully this has wet your appetite for learning the shell, and you&rsquo;ll continue to use it and expand your vocabulary. The key to getting proficient at the shell isn&rsquo;t magic, it&rsquo;s just practice and repetition. It may take you a bit longer to do some tasks as you look up commands and read man pages, but as you become accustomed to it you&rsquo;ll get faster, and pretty soon you&rsquo;ll have some skills to pay the bills. So what the shell, why not give it a try?</p>
+
+            <ul class="share-buttons">
+    <li></li>
+    <li>
+        <a class="icon-facebook-squared" href="https://www.facebook.com/sharer/sharer.php?u=http%3a%2f%2fwww.ryanlyn.ch%2fpost%2fthe-shell-by-example-part-2%2f" onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;" title=""></a>
+    </li>
+    <li>
+        <a class="icon-twitter" href="https://twitter.com/share?text=The%20Shell%20by%20Example%3a%20Part%202&amp;url=http%3a%2f%2fwww.ryanlyn.ch%2fpost%2fthe-shell-by-example-part-2%2f" onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;" title=""></a>
+    </li>
+    <li>
+        <a class="icon-gplus" href="https://plus.google.com/share?url=http%3a%2f%2fwww.ryanlyn.ch%2fpost%2fthe-shell-by-example-part-2%2f" onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;" title=""></a>
+    </li>
+    <li>
+        <a class="icon-linkedin" href="https://www.linkedin.com/shareArticle?mini=true&url=http%3a%2f%2fwww.ryanlyn.ch%2fpost%2fthe-shell-by-example-part-2%2f&title=The%20Shell%20by%20Example%3a%20Part%202" onclick="window.open(this.href, 'linkedin-share', 'width=600,height=494');return false;" title=""></a>
+    </li>
+</ul>
+
+        </article>
+        <div class="comments">
+            <h3></h3>
+            <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'ryanlynch';
+    var disqus_identifier = 'http:\/\/www.ryanlyn.ch\/post\/the-shell-by-example-part-2\/';
+    var disqus_title = 'The Shell by Example: Part 2';
+    var disqus_url = 'http:\/\/www.ryanlyn.ch\/post\/the-shell-by-example-part-2\/';
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+        </div>
+    </main>
+    <aside class="author">
+  <img class="profile-image" src="http://www.ryanlyn.chimg/ryan.jpg" alt="Ryan Lynch" />
+  <p class="name"> 
+  <strong>Ryan Lynch</strong></p>
+  <p class="address">Washington, DC USA</p>
+  <p class="link"></p>
+  <ul class="social">
+    
+<li><a href="//twitter.com/shiftyp" class="icon-twitter" target="_blank" title="Twitter"></a></li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<li><a href="//github.com/shiftyp" class="icon-github" target="_blank" title="Github"></a></li>
+
+
+
+
+<li><a href="http://www.ryanlyn.chpost/index.xml" class="icon-rss" target="_blank" title="RSS"></a></li>
+
+  </ul>
+  <br><br>
+</aside>
+
+</div>
+
+<footer class="main-footer">
+  <div class="container clearfix">
+        <a class="icon-rss" href="http://www.ryanlyn.chpost/index.xml" title="RSS"></a>
+        <p>&copy; 2015 &middot; Ryan Lynch, Powered by <a href="http://gohugo.io">Hugo</a>.</p>
+  </div>
+</footer>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.8.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script>window.jQuery || document.write('<script src="http:\/\/www.ryanlyn.chjs/vendor/jquery-1.11.0.min.js"><\/script>')</script>
+<script src="http://www.ryanlyn.chjs/plugins.js"></script>
+
+</body>
+</html>
+
