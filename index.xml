@@ -2,22 +2,22 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Blog | Ryan Lynch</title>
-    <link>http://shiftyp.github.io/</link>
+    <link>http://blog.ryanlyn.ch/</link>
     <description>Recent content on Blog | Ryan Lynch</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Fri, 25 Dec 2015 17:02:10 -0500</lastBuildDate>
-    <atom:link href="http://shiftyp.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://blog.ryanlyn.ch/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>The Shell by Example: Part 2</title>
-      <link>http://shiftyp.github.io/post/the-shell-by-example-part-2/</link>
+      <link>http://blog.ryanlyn.ch/post/the-shell-by-example-part-2/</link>
       <pubDate>Fri, 25 Dec 2015 17:02:10 -0500</pubDate>
       
-      <guid>http://shiftyp.github.io/post/the-shell-by-example-part-2/</guid>
+      <guid>http://blog.ryanlyn.ch/post/the-shell-by-example-part-2/</guid>
       <description>
 
-&lt;p&gt;In &lt;a href=&#34;http://shiftyp.github.io/post/the-shell-by-example-part-1/&#34;&gt;Part 1&lt;/a&gt; of this tutorial we learned some basics about the shell and a set of useful commands for navigating and dealing with files. Here in Part 2 we&amp;rsquo;ll cover some real world scenarios for using the shell, along with some more advanced commands and operators that really illustrate the power of the shell in performing everyday tasks. So let&amp;rsquo;s get started!&lt;/p&gt;
+&lt;p&gt;In &lt;a href=&#34;http://blog.ryanlyn.ch/post/the-shell-by-example-part-1/&#34;&gt;Part 1&lt;/a&gt; of this tutorial we learned some basics about the shell and a set of useful commands for navigating and dealing with files. Here in Part 2 we&amp;rsquo;ll cover some real world scenarios for using the shell, along with some more advanced commands and operators that really illustrate the power of the shell in performing everyday tasks. So let&amp;rsquo;s get started!&lt;/p&gt;
 
 &lt;h2 id=&#34;1-scaffolding-a-project:80a1f6395878fc3f1267400a70b6936d&#34;&gt;1. Scaffolding a Project&lt;/h2&gt;
 
@@ -251,10 +251,10 @@ git grep &amp;quot;Some grep pattern&amp;quot;
     
     <item>
       <title>The Shell by Example: Part 1</title>
-      <link>http://shiftyp.github.io/post/the-shell-by-example-part-1/</link>
+      <link>http://blog.ryanlyn.ch/post/the-shell-by-example-part-1/</link>
       <pubDate>Thu, 24 Dec 2015 10:57:30 -0500</pubDate>
       
-      <guid>http://shiftyp.github.io/post/the-shell-by-example-part-1/</guid>
+      <guid>http://blog.ryanlyn.ch/post/the-shell-by-example-part-1/</guid>
       <description>&lt;p&gt;In a nutshell (see what I did there), the shell is a program that allows you to
 interact with the core of your operating system by executing commands. You may
 think that this is an antiquated way to work on a computer given that we have
@@ -643,7 +643,7 @@ frequently. So in closing:&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ echo &amp;quot;You&#39;ve taken your first step on the path of shell foo. Congrats!&amp;quot;
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;Now on to &lt;a href=&#34;http://shiftyp.github.io/post/the-shell-by-example-part-2/&#34;&gt;Part 2&lt;/a&gt; where the real fun begins&amp;hellip;&lt;/p&gt;
+&lt;p&gt;Now on to &lt;a href=&#34;http://blog.ryanlyn.ch/post/the-shell-by-example-part-2/&#34;&gt;Part 2&lt;/a&gt; where the real fun begins&amp;hellip;&lt;/p&gt;
 </description>
     </item>
     
